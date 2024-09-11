@@ -4,5 +4,5 @@ This repo hosts codes used in the study of dietary selective effects in the micr
 
 #### Table of contents
 
-    * [Interactice demo](./interactive_demo/phylogeny_452_species.html)
+    * [Interactice demo](https://github.com/KunDHuang/KunDH-2024-CR-DietMetagenomics/tree/main/interactive_demo/phylogeny_452_species.html)
  
