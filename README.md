@@ -1,4 +1,4 @@
-# KunDH-2024-CRM-MSM_metagenomics
+# KunDH-2024-CR_DietMetagenomics
 Computational workflows for reproducing analysis in the study of Huang et al., 2024
 
 
