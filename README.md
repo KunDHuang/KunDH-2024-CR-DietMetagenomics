@@ -6,8 +6,8 @@ Computational workflows for reproducing analysis in the study of Huang et al., 2
 1. [Setup]()
 2. [General usage]()
 3. Detailed tutorials
-    * [Metagenomic reads preprocessing]()
-    * [Microbial features filtering]()
+    * [Metagenomic reads preprocessing](https://github.com/KunDHuang/slurm-computing-family/blob/main/docs/preprocessing_reads.md)
+    * [Microbial features filtering](./docs/microbial_features_filtering.md)
     * [Triangle correlation heatmap]()
     * [Phylogenetic ring]()
     * [MaAsLin2 biomarker identification]()
