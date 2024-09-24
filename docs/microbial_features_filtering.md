@@ -34,3 +34,15 @@ optional arguments:
 
 examples: profile_cleaner.py --profile <abundance_table.tsv> --row_numbers <0,1,2> --min_abundance <minimum_abundance> --min_prevalence <minimum_prevalence> --output <abundance_table_filtered.tsv>
 ```
+
+#### Demo with example data
+
+The example input, a [metaphlan taxonomy table](../example_data/microbial_species_prefiltering.tsv), can be found in `path_to_the_package/KunDH-2024-CR-DietMetagenomics/example_data`  
+
+
+Example command line:
+
+~~~bash
+profile_cleaner.py --profile microbial_species_prefiltering.tsv --min_abundance 0.01 --min_prevalence 10 --output microbial_species_postfiltering.tsv
+~~~
+

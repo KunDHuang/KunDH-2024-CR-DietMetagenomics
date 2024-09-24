@@ -22,7 +22,7 @@ def read_args(args):
                                      This program is to clean microbiome profiles.
                                      '''),
                                     epilog = textwrap.dedent('''\
-                                    examples:
+                                    examples: profile_cleaner.py --profile <abundance_table.tsv> --row_numbers <0,1,2> --min_abundance <minimum_abundance> --min_prevalence <minimum_prevalence> --output <abundance_table_filtered.tsv>
                                     '''))
 
     parser.add_argument('--profile',
