@@ -1,44 +1,38 @@
-# Load necessary libraries
-library(ggpubr)
-library(ppcor)
-library(ggplot2)
-library(reshape2)
-library(tidyverse)
 
 
-est_pcor <- function(df, x, y, control_vars, method = "spearman") {
-  # Function to estimate partial correlation between two variables, controlling for others.
+est_pcor <- function(df, x, y, control_vars = NULL) {
+  # Function to estimate correlation coefficients between two variables, by correlation of partial correlation.
   # Args:
-  #   df: Data frame containing the data.
+  #   df: Dataframe containing the data.
   #   x: Name of the first variable (string).
   #   y: Name of the second variable (string).
-  #   control_vars: Vector of variable names to control for.
-  #   method: Correlation method ("spearman" or "pearson"). Default is "spearman".
+  #   control_vars: A vector of variable names to control for in the case of particial correlation. default: [NULL]
   # Returns:
-  #   The result of the partial correlation test.
-  
-  control_vec <- c()
-  for (i in control_vars) {
-    control_vec <- c(control_vec,md_df[[i]])
-  }
-  
-  res <- pcor.test(df[, x], df[, y], control_vec, method = method)
-  res
+  #   The result of correlation test.
+    if (is.null(control_vars)) {
+        cor_res <- cor.test(df[, x], df[, y], method = "spearman")
+    } else {
+        control_vec <- c() # create a vector to store values from to-be-controlled variables
+        for (c_var in control_vars) {
+            control_vec <- c(control_vec, df[[i]])
+        }
+        cor_res <- pcor.test(df[, x], df[, y], control_vec, method = "spearman")
+    }
+    cor_res # assign correlation result to variable 'cor_res'
 }
 
-make_est_df <- function(df, parameters, control_vars) {
-  # Function to compute partial correlations between all pairs of parameters.
+make_est_df <- function(df, parameters, control_vars = NULL) {
+  # Function to compute correlation coefficients between pairs of parameters, and store them in a dataframe.
   # Args:
-  #   df: Data frame containing the data.
-  #   parameters: Vector of parameter names to compute correlations between.
-  #   control_vars: Variables to control for in partial correlations.
+  #   df: Dataframe containing the data.
+  #   parameters: A vector of parameter names.
+  #   control_vars: A vector of variable names for controlling in partial correlation analysis. default: [NULL]
   # Returns:
-  #   A partial correlation coefficients matrix.
-  
-  columns <- c("var1", "var2", "coef")
-  res_df <- tibble()
-  colnames(res_df) <- columns
-  colnames(res_df) <- columns
+  #   A dataframe of correlation coefficients between pairs of parameters.
+
+  column_headers <- c("var1", "var2", "coef") # create headers for three columns
+  res_df <- tibble() # create an empty tibble for storing results
+  colnames(res_df) <- column_headers
   for (par1 in parameters) {
     for (par2 in parameters) {
       res <- est_pcor(df, par1, par2, control_vars)
@@ -55,7 +49,6 @@ make_est_df <- function(df, parameters, control_vars) {
   cor_matrix
 }
 
-
 get_lower_tri <- function(cormat) {
   # Function to get the lower triangle of a correlation matrix.
   # Args:
@@ -67,40 +60,21 @@ get_lower_tri <- function(cormat) {
   cormat
 }
 
-reorder_cormat <- function(cormat, new_order) {
-  # Function to reorder a correlation matrix.
-  # Args:
-  #   cormat: A square correlation matrix.
-  #   new_order: A vector specifying the new order of the rows and columns.
-  # Returns:
-  #   The reordered correlation matrix.
-  
-  cormat <- cormat[new_order, new_order]
-  cormat
-}
 
-plot_density <- function(df, x_var, color_var, fill_var, xlab, ylab, palette) {
-  # Function to plot a density plot.
-  # Args:
-  #   df: Data frame containing the data.
-  #   x_var: Variable for x-axis.
-  #   color_var: Variable for color.
-  #   fill_var: Variable for fill.
-  #   xlab: Label for x-axis.
-  #   ylab: Label for y-axis.
-  #   palette: Color palette.
-  # Returns:
-  #   A ggplot object representing the density plot.
-  
-  ggpubr::ggdensity(df, x = x_var,
-                    add = "mean", rug = TRUE,
-                    color = color_var, fill = fill_var,
-                    xlab = xlab,
-                    ylab = ylab,
-                    palette = palette)
-}
 
-plot_correlation_heatmap <- function(cor_matrix) {
+plot_correlation_heatmap <- function(cor_matrix,
+                                     grad_colors = c(low = "#3C486B", high = "#FF8400", "mid" = "#FFFFFF"),
+                                     x_text_angle = 45,
+                                     y_text_angle = 0,
+                                     x_text_size = 11,
+                                     y_text_size = 11,
+                                     x_vjust = 1,
+                                     y_vjust = 1,
+                                     x_hjust = 1,
+                                     y_hjust = 1,
+                                     font_style = "Arial",
+                                     insquare_text_size = 2,
+                                     insquare_text_color = "black") {
   # Function to plot a correlation heatmap.
   # Args:
   #   cor_matrix: A correlation matrix to plot.
@@ -112,15 +86,17 @@ plot_correlation_heatmap <- function(cor_matrix) {
   
   ggheatmap <- ggplot2::ggplot(data = cor_melt, ggplot2::aes(var1, var2, fill = value)) +
     ggplot2::geom_tile(color = "white") +
-    ggplot2::scale_fill_gradient2(low = "blue", high = "red", mid = "white",
+    ggplot2::scale_fill_gradient2(low = grad_colors["low"], high = grad_colors["high"], mid = grad_colors["mid"],
                                   midpoint = 0, limit = c(-1,1), space = "Lab",
                                   name = "Spearman\nCorrelation") +
     ggplot2::theme_minimal() +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, vjust = 1,
-                                                       size = 12, hjust = 1)) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = x_text_angle, vjust = x_vjust,
+                                                       size = x_text_size, hjust = x_hjust, family = font_style),
+                   axis.text.y = ggplot2::element_text(angle = y_text_angle, vjust = y_vjust,
+                                                       size = y_text_size, hjust = y_hjust, family = font_style) ) +
     ggplot2::coord_fixed()
   ggheatmap +
-    ggplot2::geom_text(ggplot2::aes(var1, var2, label = value), color = "black", size = 2) +
+    ggplot2::geom_text(ggplot2::aes(var1, var2, label = value), color = insquare_text_color, size = insquare_text_size) +
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
@@ -153,14 +129,7 @@ md_df$Sex <- lookup_sex[md_df$Sex]
 
 md_df
 
-# Plot density plot
-palette <- c("#0072B2", "#D55E00", "#009E73")
-density_plot <- plot_density(md_df, x_var = "dietquality_score",
-                             color_var = "Diet", fill_var = "Diet",
-                             xlab = "HEI-FLEX scoring",
-                             ylab = "Subjects (density)",
-                             palette = palette)
-print(density_plot)
+
 
 # Define parameters and control variables
 parameters <- c("dietquality_score", "CRP", "IL_6", "creatinin", "glucose",
