@@ -14,10 +14,10 @@ Computational workflows for reproducing analysis in the study of Huang et al., 2
     * [Beta diversity analysis]()
     * [ComplexHeatmap plotting]()
     * [UpSet plot and correlation plot]()
-    * [Metagenomic assembly and taxonomic assignment]()
+    * [Metagenomic assembly and taxonomic assignment](https://github.com/KunDHuang/slurm-meta-assembly)
     * [Deviation plot, UpSet plot, Lollipop plot](./docs/several_plots.md)
-    * [Inferring strain-level diversity and selective pressure]()
+    * [Inferring strain-level diversity and selective pressure](https://github.com/KunDHuang/MEvol/blob/main/docs/gene_snv_analyzer.md)
 4. Interactive graphs
     * [Taxonomic structure of 452 species in the cohort](https://hoshigawarei.github.io/HTML_TEST/)
-    * [Taxonomic structure of 102 species linked with diet]()
+    * [Taxonomic structure of 102 species linked with diet](https://hoshigawarei.github.io/graphlan_HTML/)
    
