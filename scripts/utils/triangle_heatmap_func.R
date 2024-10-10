@@ -14,9 +14,9 @@ est_pcor <- function(df, x, y, control_vars = NULL) {
     } else {
         control_vec <- c() # create a vector to store values from to-be-controlled variables
         for (c_var in control_vars) {
-            control_vec <- c(control_vec, df[[i]])
+            control_vec <- c(control_vec, df[, c_var])
         }
-        cor_res <- pcor.test(df[, x], df[, y], control_vec, method = "spearman")
+        cor_res <- ppcor::pcor.test(df[, x], df[, y], control_vec, method = "spearman")
     }
     cor_res # assign correlation result to variable 'cor_res'
 }
@@ -29,20 +29,24 @@ make_est_df <- function(df, parameters, control_vars = NULL) {
   #   control_vars: A vector of variable names for controlling in partial correlation analysis. default: [NULL]
   # Returns:
   #   A dataframe of correlation coefficients between pairs of parameters.
-
+  parameters_1 <- parameters
+  parameters_2 <- parameters
   column_headers <- c("var1", "var2", "coef") # create headers for three columns
-  res_df <- tibble() # create an empty tibble for storing results
+  res_df <- tibble::tibble() # create an empty tibble for storing results
   colnames(res_df) <- column_headers
-  for (par1 in parameters) {
-    for (par2 in parameters) {
+  for (par1_i in 1:length(parameters_1)) {
+    for (par2_i in 1:length(parameters_2)) {
+      par1 <- parameters_1[par1_i]
+      par2 <- parameters_2[par2_i]
+
       res <- est_pcor(df, par1, par2, control_vars)
       cor_est <- res$estimate
       res_df <- rbind(res_df,
-                      tibble(var1 = par1, var2 = par2, coef = cor_est))
+                      tibble::tibble(var1 = par1, var2 = par2, coef = cor_est))
     }
   }
   res_df$coef <- as.numeric(res_df$coef)
-  res_df$coef[res_df$coef == -1.00] <- 1.00
+  res_df$coef[res_df$var1 == res_df$var2] <- 1.00
   res_df$coef <- round(res_df$coef, digits = 2)
   ## Convert to matrix
   cor_matrix <- xtabs(coef ~ var1 + var2, res_df)
@@ -83,7 +87,6 @@ plot_correlation_heatmap <- function(cor_matrix,
   
   cor_matrix_lower <- get_lower_tri(cor_matrix)
   cor_melt <- reshape2::melt(cor_matrix_lower, na.rm = TRUE)
-  
   ggheatmap <- ggplot2::ggplot(data = cor_melt, ggplot2::aes(var1, var2, fill = value)) +
     ggplot2::geom_tile(color = "white") +
     ggplot2::scale_fill_gradient2(low = grad_colors["low"], high = grad_colors["high"], mid = grad_colors["mid"],
@@ -105,48 +108,11 @@ plot_correlation_heatmap <- function(cor_matrix,
       panel.background = ggplot2::element_blank(),
       axis.ticks = ggplot2::element_blank(),
       legend.justification = c(1, 0),
-      legend.position = c(0.6, 0.7),
+      legend.position.inside = c(0.6, 0.7),
       legend.direction = "horizontal") +
     ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = 7, barheight = 1,
                                                    title.position = "top", title.hjust = 0.5))
 }
 
 
-## ---------- ##
-## ---------- ##
-## ---------- ##
 
-# Main script
-filename <- "Mappingfile_dietquality_02122022.tsv"
-md_df <- read.csv(filename, sep = "\t", header = TRUE)
-md_df <- head(md_df, -1)
-
-# Map 'Suppl_Vit' and 'Sex' to numeric values
-lookup_vit_suppl <- c("user" = 1, "non-user" = 0)
-lookup_sex <- c("Male" = 1, "Female" = 0)
-md_df$Suppl_Vit <- lookup_vit_suppl[md_df$Suppl_Vit]
-md_df$Sex <- lookup_sex[md_df$Sex]
-
-md_df
-
-
-
-# Define parameters and control variables
-parameters <- c("dietquality_score", "CRP", "IL_6", "creatinin", "glucose",
-                "iron", "transferrin", "ferritin", "folic_acid", "vit_B12",
-                "cholesterol", "HDL_chol", "LDL_chol", "triglycerides", "homocystein",
-                "parathormon", "vit_D3", "HbA1c", "insulin")
-
-control_vars <- c("Diet_duration", "Suppl_Vit", "Age", "Sex", "BMI")
-
-# Compute partial correlations
-cor_df <- make_est_df(md_df, parameters, control_vars)
-
-
-# Reorder correlation matrix
-new_order <- c(10, 12, 17, 14, 1, 3, 5, 2, 7, 16, 8, 11, 13, 15, 9, 19, 18, 6, 4)
-cor_matrix_reordered <- reorder_cormat(cor_df, new_order)
-
-# Plot heatmap
-heatmap_plot <- plot_correlation_heatmap(cor_matrix_reordered)
-print(heatmap_plot)
