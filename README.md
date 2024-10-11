@@ -11,7 +11,6 @@ Computational workflows for reproducing analysis in the study of Huang et al., 2
     * [Microbial features filtering](./docs/microbial_features_filtering.md)
     * [Triangle correlation heatmap]()
     * [Metagenomic assembly and taxonomic assignment](https://github.com/KunDHuang/slurm-meta-assembly)
-    * [Deviation plot, UpSet plot, Lollipop plot](./docs/several_plots.md)
     * [Inferring strain-level diversity and selective pressure](https://github.com/KunDHuang/MEvol/blob/main/docs/gene_snv_analyzer.md)
 4. Interactive graphs
     * [Taxonomic structure of 452 species in the cohort](https://hoshigawarei.github.io/HTML_TEST/)
