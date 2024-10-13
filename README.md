@@ -13,6 +13,6 @@ Computational workflows for reproducing analysis in the study of Huang et al., 2
     * [Metagenomic assembly and taxonomic assignment](https://github.com/KunDHuang/slurm-meta-assembly)
     * [Inferring strain-level diversity and selective pressure](https://github.com/KunDHuang/MEvol/blob/main/docs/gene_snv_analyzer.md)
 4. Interactive graphs
-    * [Taxonomic structure of 452 species in the cohort](https://hoshigawarei.github.io/graphlan_all_species/)
-    * [Taxonomic structure of 102 species linked with diet](https://hoshigawarei.github.io/graphlan_diet_associated_species/)
+    * [Taxonomic structure of 452 species in the cohort](https://github.com/hoshigawarei/graphlan_all_species)
+    * [Taxonomic structure of 102 species linked with diet](https://github.com/hoshigawarei/graphlan_diet_associated_species)
    
