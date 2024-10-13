@@ -9,7 +9,7 @@ Computational workflows for reproducing analysis in the study of Huang et al., 2
 3. Detailed tutorials
     * [Metagenomic reads preprocessing](https://github.com/KunDHuang/slurm-computing-family/blob/main/docs/preprocessing_reads.md)
     * [Microbial features filtering](./docs/microbial_features_filtering.md)
-    * [Triangle correlation heatmap]()
+    * [Triangle correlation heatmap](./docs/triangle_correlation_heatmap.md)
     * [Metagenomic assembly and taxonomic assignment](https://github.com/KunDHuang/slurm-meta-assembly)
     * [Inferring strain-level diversity and selective pressure](https://github.com/KunDHuang/MEvol/blob/main/docs/gene_snv_analyzer.md)
 4. Interactive graphs
